@@ -33,12 +33,56 @@ SpCodeReprexItCommand >> afterSelectionInsertAndSelect: aString [
 ]
 
 { #category : #execution }
+SpCodeReprexItCommand >> buildCompiledMethod: aText [
+
+	| codeStream doItReceiver doItContext aCompiledMethod |
+	codeStream := aText readStream.
+	(self context respondsTo: #doItReceiver)
+		ifTrue: [ 
+			doItReceiver := self context doItReceiver.
+			doItContext := self context doItContext ]
+		ifFalse: [ 
+			doItReceiver := doItContext := nil ].
+		
+	aCompiledMethod := self compile: codeStream for: doItReceiver in: doItContext.
+	aCompiledMethod isReturnSpecial ifTrue: [ 
+		self inform: 'Nothing to debug, the expression is optimized' ].
+	^ aCompiledMethod.
+]
+
+{ #category : #compiling }
+SpCodeReprexItCommand >> compile: aStream for: anObject in: evalContext [
+	| methodClass |
+
+	methodClass := evalContext
+		ifNil: [ anObject class ]
+		ifNotNil: [ evalContext methodClass ].
+
+	^ context class compiler
+		source: aStream;
+		class: methodClass;
+		context: evalContext;
+		requestor: context; "it should enable a visibility of current tool variables in new debugger"
+		noPattern: true;
+		failBlock: [ ^ nil ];
+		compile
+]
+
+{ #category : #private }
 SpCodeReprexItCommand >> evaluate: aText andDo: aBlock [
 	"Treat the current selection as an expression; evaluate it and invoke aBlock with the result."
 	
+	| stmts aCompiledMethod |
+
+	(aCompiledMethod := self buildCompiledMethod: aText)
+		ifNil: [ ^ self ].
+	stmts := aCompiledMethod ast statements.
+	"process := [ aCompiledMethod ast statements ] newProcess.	"
+	"session := process newDebugSessionNamed: 'ReprexIt Session' startedAt: process suspendedContext."
+
 	^ String streamContents: [ : stream |
-		aText asString linesDo: [ : line | 
-			stream << (self reprex: line andDo: aBlock) contents ] ]
+		 stmts do: [ : rbStmt | 
+			stream << (self reprex: rbStmt andDo: aBlock) contents ] ].
 ]
 
 { #category : #execution }
@@ -65,22 +109,16 @@ SpCodeReprexItCommand >> printExpression: evalString withResult: aResult [
 ]
 
 { #category : #execution }
-SpCodeReprexItCommand >> reprex: aString andDo: aBlock [
+SpCodeReprexItCommand >> reprex: aRBNode andDo: aBlock [
 	"Treat the current selection as an expression; evaluate it and invoke aBlock with the result and evaluated expression ."
 
-	| stream result receiver evaluationContext |
+	| sourceCode result |
 	
-	stream := aString readStream.
-	receiver := self context doItReceiver.
-	evaluationContext := self context doItContext.
-	result := receiver class compiler
-		source: stream;
-		context: evaluationContext;
-		receiver: receiver;
-		requestor: receiver;
-		failBlock:  [ ^ nil ];
-		evaluate.		
-	^ aBlock value: aString value: result.
+	sourceCode := aRBNode formattedCode.
+	result := aRBNode isReturn
+		ifFalse: [ aRBNode evaluate ]
+		ifTrue: [ aRBNode children first evaluate ].
+	^ aBlock value: sourceCode value: result.
 
 ]
 
