@@ -5,9 +5,11 @@ SpMorphicBaseTextAdapter >> reprexInsert: aString at: positionIndex [
 	| text |
 
 	text := self getText.
-	text := 
-		(text copyFrom: 1 to: positionIndex), 
-		aString.
+	text := String streamContents: [ : stream | 
+		stream
+			<< (text copyFrom: 1 to: positionIndex - 1);
+			cr;
+			<< 	aString ].
 
 	self model text: text
 ]

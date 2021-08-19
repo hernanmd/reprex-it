@@ -5,8 +5,14 @@ Class {
 }
 
 { #category : #defaults }
+SpCodeReprexItCommand class >> defaultDescription [
+
+	^ 'Evaluate, print and copy selection and each result.'
+]
+
+{ #category : #defaults }
 SpCodeReprexItCommand class >> defaultIconName [
-	^#smallProfile 
+	^#publish 
 ]
 
 { #category : #default }
@@ -25,11 +31,20 @@ SpCodeReprexItCommand class >> defaultShortcutKey [
 
 { #category : #execution }
 SpCodeReprexItCommand >> afterSelectionInsertAndSelect: aString [
-	| selection |
-	selection := self context selectionInterval.
-	self context reprexInsert: aString at: selection last + 1.
-	self context
-		selectionInterval: (selection last + 1 to: selection last + aString size)
+	" Private - If the selection is less than aString, append the remaining text after selection so we don't lose it "
+
+	| selectionInterval remaining previousContextSize |
+
+	selectionInterval := self context selectionInterval.
+	previousContextSize := self contextText size.
+	selectionInterval size < previousContextSize
+		ifTrue: [ remaining := self contextText 
+							copyFrom: selectionInterval last + 1
+							to: previousContextSize ].
+	self context reprexInsert: aString at: selectionInterval last + 1.
+	self context selectionInterval: (selectionInterval last + 3 to: selectionInterval last + aString size + 1).
+	remaining ifNotNil: [ : remainingText | self context text: (self contextText , remainingText) ].
+
 ]
 
 { #category : #execution }
@@ -69,6 +84,12 @@ SpCodeReprexItCommand >> compile: aStream for: anObject in: evalContext [
 ]
 
 { #category : #private }
+SpCodeReprexItCommand >> contextText [
+
+	^ self context text
+]
+
+{ #category : #private }
 SpCodeReprexItCommand >> evaluate: aText andDo: aBlock [
 	"Treat the current selection as an expression; evaluate it and invoke aBlock with the result."
 	
@@ -91,9 +112,9 @@ SpCodeReprexItCommand >> execute [
 	description of the result of evaluation after the selection and then make 
 	this description the new text selection."
 	
-	self afterSelectionInsertAndSelect: self reprexIt
-	
-
+	self afterSelectionInsertAndSelect: self reprexIt.
+	self context doTextCopy.
+	self inform: 'ReprexIt copied!'
 ]
 
 { #category : #execution }
