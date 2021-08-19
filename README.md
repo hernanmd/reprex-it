@@ -5,11 +5,9 @@
 # Table of Contents
 
 - [Description](#description)
+- [Usage](#usage)
 - [Installation](#installation)
   - [Baseline String](#baseline-string)
-- [Usage](#usage)
-  - [Subsection1](#subsection1)
-- [Implementation notes](#implementation-note)
 - [Contribute](#contribute)
   - [Version management](#version-management)
 - [License](#license)
@@ -17,6 +15,10 @@
 # Description
 
 Adds a menu item called "ReprexIt" to the Pharo Playground contextual options menu. ReprexIt evaluates, prints and copies to the clipboard the result of each selected line of code, and is useful for sharing scripts and Pharo formatted expressions on Github or Discord for example.
+
+# Usage
+
+![reprexit-demo](https://user-images.githubusercontent.com/4825959/130121713-d1ce10c9-432f-41dc-a546-e0ceae83816c.gif)
 
 # Installation
 
@@ -40,10 +42,6 @@ If you want to add the ReprexIt to your Metacello Baselines or Configurations, c
 		with: [ spec repository: 'github://hernanmd/reprex-it/src' ];
 	" ... "
 ```
-
-# Usage
-
-![reprexit-demo](https://user-images.githubusercontent.com/4825959/130121713-d1ce10c9-432f-41dc-a546-e0ceae83816c.gif)
 
 # Contribute
 
