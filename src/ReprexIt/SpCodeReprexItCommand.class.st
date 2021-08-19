@@ -43,6 +43,7 @@ SpCodeReprexItCommand >> afterSelectionInsertAndSelect: aString [
 							to: previousContextSize ].
 	self context reprexInsert: aString at: selectionInterval last + 1.
 	self context selectionInterval: (selectionInterval last + 3 to: selectionInterval last + aString size + 1).
+	self context doTextCopy.
 	remaining ifNotNil: [ : remainingText | self context text: (self contextText , remainingText) ].
 
 ]
@@ -113,7 +114,6 @@ SpCodeReprexItCommand >> execute [
 	this description the new text selection."
 	
 	self afterSelectionInsertAndSelect: self reprexIt.
-	self context doTextCopy.
 	self inform: 'ReprexIt copied!'
 ]
 
