@@ -1,0 +1,1 @@
+SmalltalkCISpec {  #loading : [    SCIMetacelloLoadSpec {      #baseline : 'ReprexIt',      #directory : 'src',      #platforms : [ #pharo ]    }  ],  #testing : {    #coverage : {      #packages : [ 'ReprexIt*' ]    }  }}
