@@ -8,6 +8,16 @@ Class {
 }
 
 { #category : #accessing }
+ReprexItTest >> contextFor: aString [ 
+
+	^ SpCodePresenter new
+		withoutSyntaxHighlight;
+		beNotEditable;
+		text: aString;
+		yourself
+]
+
+{ #category : #accessing }
 ReprexItTest >> reprextItEval [
 
 	^ reprextItEval
@@ -32,8 +42,7 @@ ReprexItTest >> testMultipleVariables [
 
 	| script expected |
 	
-	script := '
-| myObj anObj |
+	script := '| myObj anObj |
 myObj := 1.
 anObj := 2.
 myObj := 5 + anObj.'.
@@ -47,6 +56,7 @@ anObj := 2
 "7"
 ```'.
 
-	reprextItEval.
-	self assert: script reprexIt equals: expected trimmed.
+	reprextItEval context: (self contextFor: script).
+	reprextItEval context selectionInterval: (1 to: script size).
+	self assert: reprextItEval reprexIt trimmed equals: expected trimmed.
 ]

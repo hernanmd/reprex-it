@@ -91,6 +91,12 @@ SpCodeReprexItCommand >> contextText [
 ]
 
 { #category : #private }
+SpCodeReprexItCommand >> contextText: aString [
+
+	self context text: aString
+]
+
+{ #category : #private }
 SpCodeReprexItCommand >> evaluate: aText andDo: aBlock [
 	"Treat the current selection as an expression; evaluate it and invoke aBlock with the result."
 	
