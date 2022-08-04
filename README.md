@@ -1,4 +1,5 @@
 [![Build status](https://github.com/hernanmd/reprex-it/workflows/CI/badge.svg)](https://github.com/hernanmd/reprex-it/actions/workflows/ci.yml)
+[![Coverage Status](https://coveralls.io/repos/github/hernanmd/reprex-it/badge.svg?branch=master)](https://coveralls.io/github/hernanmd/reprex-it?branch=master)
 [![license-badge](https://img.shields.io/badge/license-MIT-blue.svg)](https://img.shields.io/badge/license-MIT-blue.svg)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
